@@ -2,6 +2,7 @@ package com.codecool.zlapka.localizationcomponent.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,38 +12,46 @@ import java.math.BigDecimal;
 public class Localization {
 
     @Id
-    @Column(name = "event_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String id;
     private String domain;
     private String name;
     @Column(name = "geo_tag")
-    private BigDecimal latitude;
-    private BigDecimal longitude;
-    private BigDecimal altitude;
+    private double latitude;
+    private double longitude;
+    private double altitude;
+    private String owner;
+    private boolean isPrivate;
+
 
     public Localization() {}
 
-    public Localization(String domain, String name, BigDecimal latitude,
-                        BigDecimal longitude, BigDecimal altitude) {
+    public Localization(String domain, String name, double latitude, double longitude, double altitude,
+                        String owner, boolean isPrivate) {
         this.domain = domain;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
+        this.owner = owner;
+        this.isPrivate = isPrivate;
     }
 
-    public Localization(Long id, String domain, String name, BigDecimal latitude,
-                        BigDecimal longitude, BigDecimal altitude) {
+    public Localization(String id, String domain, String name, double latitude, double longitude, double altitude,
+                        String owner, boolean isPrivate) {
         this.id = id;
         this.domain = domain;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
+        this.owner = owner;
+        this.isPrivate = isPrivate;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,19 +63,27 @@ public class Localization {
         return name;
     }
 
-    public BigDecimal getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public BigDecimal getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public BigDecimal getAltitude() {
+    public double getAltitude() {
         return altitude;
     }
 
-    public void setId(Long id) {
+    public String getOwner() {
+        return owner;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -78,15 +95,23 @@ public class Localization {
         this.name = name;
     }
 
-    public void setLatitude(BigDecimal latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(BigDecimal longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public void setAltitude(BigDecimal altitude) {
+    public void setAltitude(double altitude) {
         this.altitude = altitude;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }
