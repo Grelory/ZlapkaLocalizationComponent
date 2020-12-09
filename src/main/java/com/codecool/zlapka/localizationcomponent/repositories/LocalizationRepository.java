@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LocalizationRepository extends CrudRepository<Localization, Long> {
+public interface LocalizationRepository extends CrudRepository<Localization, String> {
 
 
 }
