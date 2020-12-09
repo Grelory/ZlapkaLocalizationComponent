@@ -14,22 +14,22 @@ public class EventHeader {
     @Column(columnDefinition = "VARCHAR(255)")
     private String id;
     private String name;
-    private Date date;
+    private Date time;
     @Column(name = "localization_id")
     private String localizationId;
 
     public EventHeader() {}
 
-    public EventHeader(String name, Date date, String localization) {
+    public EventHeader(String name, Date time, String localization) {
         this.name = name;
-        this.date = date;
+        this.time = time;
         this.localizationId = localization;
     }
 
-    public EventHeader(String id, String name, Date date, String localization) {
+    public EventHeader(String id, String name, Date time, String localization) {
         this.id = id;
         this.name = name;
-        this.date = date;
+        this.time = time;
         this.localizationId = localization;
     }
 
@@ -41,8 +41,8 @@ public class EventHeader {
         return name;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getTime() {
+        return time;
     }
 
     public String getLocalizationId() {
@@ -53,8 +53,8 @@ public class EventHeader {
         this.name = name;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     public void setLocalizationId(String localizationId) {
