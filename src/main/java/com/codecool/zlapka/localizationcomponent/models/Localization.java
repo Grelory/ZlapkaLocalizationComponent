@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "location")
@@ -18,18 +18,20 @@ public class Localization {
     private String id;
     private String domain;
     private String name;
-    @Column(name = "geo_tag")
     private double latitude;
     private double longitude;
     private double altitude;
     private String owner;
     private boolean isPrivate;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<EventHeader> eventHeaders;
+
 
     public Localization() {}
 
     public Localization(String domain, String name, double latitude, double longitude, double altitude,
-                        String owner, boolean isPrivate) {
+                        String owner, boolean isPrivate, Set<EventHeader> eventHeaders) {
         this.domain = domain;
         this.name = name;
         this.latitude = latitude;
@@ -37,10 +39,11 @@ public class Localization {
         this.altitude = altitude;
         this.owner = owner;
         this.isPrivate = isPrivate;
+        this.eventHeaders = eventHeaders;
     }
 
     public Localization(String id, String domain, String name, double latitude, double longitude, double altitude,
-                        String owner, boolean isPrivate) {
+                        String owner, boolean isPrivate, Set<EventHeader> eventHeaders) {
         this.id = id;
         this.domain = domain;
         this.name = name;
@@ -49,6 +52,7 @@ public class Localization {
         this.altitude = altitude;
         this.owner = owner;
         this.isPrivate = isPrivate;
+        this.eventHeaders = eventHeaders;
     }
 
     public String getId() {
@@ -83,6 +87,10 @@ public class Localization {
         return isPrivate;
     }
 
+    public Set<EventHeader> getEventHeaders() {
+        return this.eventHeaders;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -113,5 +121,13 @@ public class Localization {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public void addEventHeader(EventHeader eventHeader) {
+        this.eventHeaders.add(eventHeader);
+    }
+
+    public void removeEventHeaderById(String id) {
+        eventHeaders.removeIf(eventHeader -> eventHeader.getId().equals(id));
     }
 }
