@@ -5,35 +5,43 @@ import com.codecool.zlapka.localizationcomponent.repositories.LocalizationReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class LocalizationService {
 
     @Autowired
-    private LocalizationRepository repository;
+    private LocalizationRepository localizationRepository;
     @Autowired
-    private LocalizationJsonMapper jsonMapper;
+    private JsonMapper jsonMapper;
 
-    public String getLocalizationById(Long id) {
-        return jsonMapper.jsonRepresentation(repository.findById(id));
+    public String getLocalizationById(String id) {
+        return jsonMapper.jsonRepresentation(localizationRepository.findById(id));
     }
 
     public Optional<Localization> add(String jsonElement) {
         Optional<Localization> localization = jsonMapper.getLocalizationFromJson(jsonElement);
         if (localization.isEmpty()) return Optional.empty();
-        return Optional.of(repository.save(localization.get()));
+        return Optional.of(localizationRepository.save(localization.get()));
     }
 
-    public String deleteLocalizationById(Long id) {
-        repository.deleteById(id);
+    public String deleteLocalizationById(String id) {
+        localizationRepository.deleteById(id);
         return "{ \"status\":\"200\", \"info\":\"Localization has been deleted\"";
     }
 
     public String update(String jsonElement) {
         Optional<Localization> localization = jsonMapper.getLocalizationFromJson(jsonElement);
-        localization.ifPresent(repository::save);
+        localization.ifPresent(localizationRepository::save);
         return "{ \"status\":\"200\", \"info\":\"Localization has been updated\"";
+    }
+
+    public String getAllLocalizations() {
+        List<Localization> localizations = new ArrayList<>();
+        localizationRepository.findAll().forEach(localizations::add);
+        return jsonMapper.jsonRepresentation(localizations);
     }
 
 }
