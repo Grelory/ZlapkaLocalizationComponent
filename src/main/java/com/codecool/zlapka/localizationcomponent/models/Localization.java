@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "location")
@@ -22,28 +22,28 @@ public class Localization {
     private double longitude;
     private double altitude;
     private String owner;
-    private boolean isPrivate;
+    @Enumerated(value = EnumType.STRING)
+    private LocalizationStatus status;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<EventHeader> eventHeaders;
-
+    @ElementCollection
+    private List<String> events;
 
     public Localization() {}
 
     public Localization(String domain, String name, double latitude, double longitude, double altitude,
-                        String owner, boolean isPrivate, Set<EventHeader> eventHeaders) {
+                        String owner, LocalizationStatus status, List<String> events) {
         this.domain = domain;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
         this.owner = owner;
-        this.isPrivate = isPrivate;
-        this.eventHeaders = eventHeaders;
+        this.status = status;
+        this.events = events;
     }
 
     public Localization(String id, String domain, String name, double latitude, double longitude, double altitude,
-                        String owner, boolean isPrivate, Set<EventHeader> eventHeaders) {
+                        String owner, LocalizationStatus status, List<String> events) {
         this.id = id;
         this.domain = domain;
         this.name = name;
@@ -51,8 +51,8 @@ public class Localization {
         this.longitude = longitude;
         this.altitude = altitude;
         this.owner = owner;
-        this.isPrivate = isPrivate;
-        this.eventHeaders = eventHeaders;
+        this.status = status;
+        this.events = events;
     }
 
     public String getId() {
@@ -83,12 +83,12 @@ public class Localization {
         return owner;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public LocalizationStatus getStatus() {
+        return status;
     }
 
-    public Set<EventHeader> getEventHeaders() {
-        return this.eventHeaders;
+    public List<String> getEvents() {
+        return events;
     }
 
     public void setId(String id) {
@@ -119,15 +119,23 @@ public class Localization {
         this.owner = owner;
     }
 
-    public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
+    public void setStatus(LocalizationStatus status) {
+        this.status = status;
     }
 
-    public void addEventHeader(EventHeader eventHeader) {
-        this.eventHeaders.add(eventHeader);
+    public void setEvents(List<String> events) {
+        this.events = events;
     }
 
-    public void removeEventHeaderById(String id) {
-        eventHeaders.removeIf(eventHeader -> eventHeader.getId().equals(id));
+    public void addEvent(String eventId) {
+        this.events.add(eventId);
+    }
+
+    public void removeEvent(String eventId) {
+        this.events.removeIf(id -> id.equals(eventId));
+    }
+
+    public boolean eventExists(String eventId) {
+        return this.events.stream().anyMatch(id -> id.equals(eventId));
     }
 }
