@@ -1,6 +1,7 @@
 package com.codecool.zlapka.localizationcomponent.controllers;
 
 import com.codecool.zlapka.localizationcomponent.services.LocalizationService;
+import com.codecool.zlapka.localizationcomponent.services.NetworkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ public class LocalizationController {
 
     @Autowired
     private LocalizationService localizationService;
+    @Autowired
+    private NetworkService networkService;
 
     @GetMapping(value = "/localization/all")
     public ResponseEntity<String> getAllLocation() {
@@ -68,10 +71,9 @@ public class LocalizationController {
 
         // get appropriate information from http
 
-        localizationService.add(jsonLocalization);
+        return localizationService.add(jsonLocalization);
 
         // return proper status and info
-        return "{ \"status\":\"200\", \"info\":\"Localization has been updated\"}";
     }
 
     @GetMapping(value = "/localization/bond/event")
@@ -81,7 +83,7 @@ public class LocalizationController {
 
         // get appropriate information from http
         System.out.println("\n\n###############################################");
-        System.out.println("get method");
+        System.out.println("gets method");
         return localizationService.getEventsLocalizationById(id);
 
         // return proper status and info
