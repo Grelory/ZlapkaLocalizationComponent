@@ -1,8 +1,9 @@
 package com.codecool.zlapka.localizationcomponent.controllers;
 
-import com.codecool.zlapka.localizationcomponent.services.EventHeaderService;
 import com.codecool.zlapka.localizationcomponent.services.LocalizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,17 +11,19 @@ public class LocalizationController {
 
     @Autowired
     private LocalizationService localizationService;
-    @Autowired
-    private EventHeaderService eventHeaderService;
 
     @GetMapping(value = "/localization/all")
-    public String getAllLocation() {
+    public ResponseEntity<String> getAllLocation() {
 
         // authentication
 
         // get appropriate information from http
 
-        return localizationService.getAllLocalizations();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Content-type", "application/json")
+                .header("Access-Control-Allow-Origin", "*")
+                .body(localizationService.getAllLocalizations());
+
 
         // return proper status and info
     }
@@ -77,19 +80,21 @@ public class LocalizationController {
         // authentication
 
         // get appropriate information from http
-
-        return eventHeaderService.getEventsLocalizationById(id);
+        System.out.println("\n\n###############################################");
+        System.out.println("get method");
+        return localizationService.getEventsLocalizationById(id);
 
         // return proper status and info
     }
 
     @DeleteMapping(value = "/localization/bond/event")
-    public String removeEventFromLocationById(@RequestParam(name = "id") String id){
+    public String removeEventFromLocationById(@RequestBody String jsonEventHeader){
         // authentication
 
         // get appropriate information from http
-
-        return eventHeaderService.deleteById(id);
+        System.out.println("\n\n###############################################");
+        System.out.println("delete method");
+        return localizationService.deleteEventInLocalization(jsonEventHeader);
 
         // return proper status and info
     }
@@ -99,8 +104,9 @@ public class LocalizationController {
         // authentication
 
         // get appropriate information from http
-
-        return eventHeaderService.update(jsonEventHeader);
+        System.out.println("\n\n###############################################");
+        System.out.println("put method");
+        return localizationService.updateEventLocalization(jsonEventHeader);
 
         // return proper status and info
     }
@@ -110,8 +116,9 @@ public class LocalizationController {
         // authentication
 
         // get appropriate information from http
-
-        return eventHeaderService.bindEventToLocalization(jsonEventHeader);
+        System.out.println("\n\n###############################################");
+        System.out.println("Post method");
+        return localizationService.bindEventToLocalization(jsonEventHeader);
 
         // return proper status and info
     }
