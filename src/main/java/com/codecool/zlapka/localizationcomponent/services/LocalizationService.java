@@ -2,6 +2,7 @@ package com.codecool.zlapka.localizationcomponent.services;
 
 import com.codecool.zlapka.localizationcomponent.Networking.EventBond;
 import com.codecool.zlapka.localizationcomponent.Networking.EventBondUpdate;
+import com.codecool.zlapka.localizationcomponent.Networking.LocalizationBond;
 import com.codecool.zlapka.localizationcomponent.models.Localization;
 import com.codecool.zlapka.localizationcomponent.repositories.LocalizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.util.Optional;
 public class LocalizationService {
 
     @Autowired
+    private NetworkService networkService;
+    @Autowired
     private LocalizationRepository localizationRepository;
     @Autowired
     private JsonMapper jsonMapper;
@@ -23,22 +26,65 @@ public class LocalizationService {
         return jsonMapper.jsonRepresentation(localizationRepository.findById(id));
     }
 
-    public Optional<Localization> add(String jsonElement) {
-        Optional<Localization> localization = jsonMapper.getLocalizationFromJson(jsonElement);
-        if (localization.isEmpty()) return Optional.empty();
-        return Optional.of(localizationRepository.save(localization.get()));
+    public String add(String jsonElement) {
+        Optional<Localization> optionalLocalization = jsonMapper.getLocalizationFromJson(jsonElement);
+        if (optionalLocalization.isEmpty()) return "{ \"status\":\"400\", \"info\":\"Invalid data!\"}";
+        Localization localization = optionalLocalization.get();
+        Localization savedLocalization = localizationRepository.save(localization);
+        String localizationBondJson = jsonMapper.parseLocalizationBondToJson(
+                new LocalizationBond(savedLocalization.getId(), savedLocalization.getName()));
+        String userApiResponse = networkService
+                .addLocalizationToUser(localizationBondJson, localization.getOwner());
+        return "{ \"status\":\"200\", \"info\":\"Localization has been added\"," +
+                "\"userApiResponse\":[" + userApiResponse + "]}";
     }
 
     public String deleteLocalizationById(String id) {
-        localizationRepository.deleteById(id);
-        // todo send request to inform event api that localization has been deleted
-        return "{ \"status\":\"200\", \"info\":\"Localization has been deleted\"}";
+        if (!localizationRepository.existsById(id)) return "{ \"status\":\"400\", \"info\":\"Invalid data!\"}";
+        Localization localization = localizationRepository.findById(id).get();
+        LocalizationBond localizationBond = new LocalizationBond(id, localization.getName());
+        String localizationBondJson = jsonMapper.parseLocalizationBondToJson(localizationBond);
+        String userApiResponse = networkService
+                .deleteLocalizationFromUser(localizationBondJson, localization.getOwner());
+
+        // todo delete localizations ids from bound events
+
+        localizationRepository.delete(localization);
+        return "{ \"status\":\"200\", \"info\":\"Localization has been deleted\"," +
+                "\"userApiResponse\":[" + userApiResponse + "]}";
     }
 
     public String update(String jsonElement) {
-        Optional<Localization> localization = jsonMapper.getLocalizationFromJson(jsonElement);
-        localization.ifPresent(localizationRepository::save);
-        return "{ \"status\":\"200\", \"info\":\"Localization has been updated\"}";
+        Optional<Localization> optionalLocalization= jsonMapper.getLocalizationFromJson(jsonElement);
+        Localization localization = optionalLocalization.get();
+
+        if (!localizationRepository.existsById(localization.getId())) {
+            return "{ \"status\":\"400\", \"info\":\"Invalid data!\"}";
+        }
+
+        Localization storedLocalization = localizationRepository.findById(localization.getId()).get();
+
+        String userApiResponse = "";
+
+        if (!storedLocalization.getOwner().equals(localization.getOwner())) {
+            LocalizationBond localizationBond = new LocalizationBond(localization.getId(), localization.getName());
+            String localizationBondJson = jsonMapper.parseLocalizationBondToJson(localizationBond);
+            userApiResponse += networkService.deleteLocalizationFromUser(localizationBondJson, storedLocalization.getOwner());
+            userApiResponse += ",";
+            userApiResponse += networkService.addLocalizationToUser(localizationBondJson, localization.getOwner());
+        }
+
+        if (!storedLocalization.getName().equals(localization.getName())) {
+            LocalizationBond localizationBond = new LocalizationBond(localization.getId(), localization.getName());
+            String localizationBondJson = jsonMapper.parseLocalizationBondToJson(localizationBond);
+            if (userApiResponse.length() != 0) userApiResponse += ",";
+            userApiResponse += networkService.updateLocalizationNameInUser(localizationBondJson, localization.getOwner());
+        }
+
+        localizationRepository.save(localization);
+
+        return "{ \"status\":\"200\", \"info\":\"Localization has been updated\"," +
+                "\"userApiResponse\":[" + userApiResponse + "]}";
     }
 
     public String getAllLocalizations() {
