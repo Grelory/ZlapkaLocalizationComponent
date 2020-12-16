@@ -1,11 +1,11 @@
 package com.codecool.zlapka.localizationcomponent.services;
 
-import com.codecool.zlapka.localizationcomponent.models.EventHeader;
+import com.codecool.zlapka.localizationcomponent.Networking.EventBond;
+import com.codecool.zlapka.localizationcomponent.Networking.EventBondUpdate;
 import com.codecool.zlapka.localizationcomponent.models.Localization;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,16 +39,16 @@ public class JsonMapper {
         return gson.toJson(localizations);
     }
 
-    public String jsonRepresentation(EventHeader eventHeader) {
-
-        return gson.toJson(eventHeader);
+    public String parseEventsIdsToJson(List<String> events) {
+        return gson.toJson(events);
     }
 
-    public String eventHeadersJsonRepresentation(List<EventHeader> eventHeaders) {
-        return gson.toJson(eventHeaders);
+    public EventBond getEventBondFromJson(String json) {
+        return gson.fromJson(json, EventBond.class);
     }
 
-    public EventHeader getEventHeaderFromJson(String jsonElement) {
-        return gson.fromJson(jsonElement, EventHeader.class);
+    public EventBondUpdate getEventBondUpdateFromJson(String json) {
+        return gson.fromJson(json, EventBondUpdate.class);
     }
+
 }
