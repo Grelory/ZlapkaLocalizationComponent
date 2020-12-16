@@ -2,6 +2,7 @@ package com.codecool.zlapka.localizationcomponent.services;
 
 import com.codecool.zlapka.localizationcomponent.Networking.EventBond;
 import com.codecool.zlapka.localizationcomponent.Networking.EventBondUpdate;
+import com.codecool.zlapka.localizationcomponent.Networking.LocalizationBond;
 import com.codecool.zlapka.localizationcomponent.models.Localization;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,10 @@ public class JsonMapper {
 
     public EventBondUpdate getEventBondUpdateFromJson(String json) {
         return gson.fromJson(json, EventBondUpdate.class);
+    }
+
+    public String parseLocalizationBondToJson(LocalizationBond localizationBond) {
+        return gson.toJson(localizationBond);
     }
 
 }
