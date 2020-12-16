@@ -1,8 +1,8 @@
 package com.codecool.zlapka.localizationcomponent.services;
 
-import com.codecool.zlapka.localizationcomponent.Networking.EventBond;
-import com.codecool.zlapka.localizationcomponent.Networking.EventBondUpdate;
-import com.codecool.zlapka.localizationcomponent.Networking.LocalizationBond;
+import com.codecool.zlapka.localizationcomponent.networking.EventBond;
+import com.codecool.zlapka.localizationcomponent.networking.EventBondUpdate;
+import com.codecool.zlapka.localizationcomponent.networking.LocalizationBond;
 import com.codecool.zlapka.localizationcomponent.models.Localization;
 import com.codecool.zlapka.localizationcomponent.repositories.LocalizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;

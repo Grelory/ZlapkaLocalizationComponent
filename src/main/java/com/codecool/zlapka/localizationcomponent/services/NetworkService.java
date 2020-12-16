@@ -1,6 +1,6 @@
 package com.codecool.zlapka.localizationcomponent.services;
 
-import com.codecool.zlapka.localizationcomponent.Networking.ConnectionProvider;
+import com.codecool.zlapka.localizationcomponent.networking.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

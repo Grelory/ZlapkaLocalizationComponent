@@ -1,4 +1,4 @@
-package com.codecool.zlapka.localizationcomponent.Networking;
+package com.codecool.zlapka.localizationcomponent.networking;
 
 import org.springframework.stereotype.Service;
 
