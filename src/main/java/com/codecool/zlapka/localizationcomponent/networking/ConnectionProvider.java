@@ -13,12 +13,12 @@ import java.util.Optional;
 @Service
 public class ConnectionProvider {
 
-    private String userPATH = "http://5.135.20.171:8080/userAPI/users/";
+    private String userPATH = "http://5.135.20.171:44387/userApi/users/";
 
     public ConnectionProvider() { }
 
     public HttpURLConnection ownerBondConnection(String UUID, String action) throws IOException {
-        return (HttpURLConnection) new URL(userPATH + UUID + "/locations/" + action).openConnection();
+        return (HttpURLConnection) new URL(userPATH + "userId/locations/" + action + "?userid=" + UUID).openConnection();
     }
 
     public Optional<String> sendRequest(byte[] requestBody, HttpURLConnection connection, String method) {
