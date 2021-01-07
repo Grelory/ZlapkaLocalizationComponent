@@ -17,4 +17,8 @@ public class LocalizationBond {
     public String getName() {
         return name;
     }
+
+    public String parseToJson() {
+        return "{\"id\":\"" + localizationId + "\",\"name\":\"" + name + "\"}";
+    }
 }
