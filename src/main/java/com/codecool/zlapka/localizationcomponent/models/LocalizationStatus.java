@@ -2,8 +2,8 @@ package com.codecool.zlapka.localizationcomponent.models;
 
 public enum LocalizationStatus {
 
-    PRIVATE("private"),
-    PUBLIC("public");
+    PRIVATE("PRIVATE"),
+    PUBLIC("PUBLIC");
 
     private final String name;
 
