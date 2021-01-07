@@ -53,7 +53,7 @@ public class JsonMapper {
     }
 
     public String parseLocalizationBondToJson(LocalizationBond localizationBond) {
-        return gson.toJson(localizationBond);
+        return localizationBond.parseToJson();
     }
 
 }
